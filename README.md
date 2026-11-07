@@ -9,4 +9,7 @@ Same "Poster" skin as MetroDrone; fiddler drawing = `drawing_fiddler with glasse
 - Backup / restore = JSON file download / upload.
 
 Embed on WordPress (same pattern as MetroDrone):
-`<iframe src="https://jkleinberg.com/fiddlehed-tune-tracker/" width="100%" height="1100" style="border:0"></iframe>`
+`<iframe src="https://fiddlehed.github.io/fiddlehed-tune-tracker/" width="100%" height="1100" style="border:0"></iframe>`
+
+Live: https://fiddlehed.github.io/fiddlehed-tune-tracker/ (FiddleHed org, GitHub Pages from main /root)
+WordPress page: fiddlehed.com/tune-tracker (page ID 81258). PDF in WP media: ID 81257.
