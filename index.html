@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Tune Tracker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* ==========================================================
+   Tune Tracker — FiddleHed "Poster" skin (same as MetroDrone)
+   Obsolete headings + Karla body · red #990034 on cream #FBF6EC
+   Layout: one cream card — red masthead, add bar, "Up today" cards,
+   "Resting" cards, how-to, backup, pen-and-ink fiddler footer.
+   Single deliberate light look (brand paper), no dark variant.
+   ========================================================== */
+@font-face {
+  font-family: 'Obsolete';
+  src: url('Obsolete.woff2') format('woff2');
+  font-display: swap;
+}
+:root {
+  --fh-red: #990034;
+  --fh-red-dark: #7a0029;
+  --fh-cream: #FBF6EC;
+  --fh-desk: #efe7d8;
+  --fh-paper: #fffdf7;
+  --fh-ink: #1d1a16;
+  --fh-gray: #666666;
+  --fh-line: #d8cfbe;
+  --fh-pink: #e8b7c6;
+  --r1: #f6e4e9; --r2: #edc9d4; --r3: #dc9cb0; --r4: #b8456b; --r5: #990034;
+  --display: 'Obsolete', Georgia, serif;
+  --body: 'Karla', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--body);
+  background: var(--fh-desk);
+  color: var(--fh-gray);
+  font-size: 16px;
+  line-height: 1.45;
+  padding-block: 16px 24px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.container {
+  background: var(--fh-cream);
+  border-radius: 8px;
+  box-shadow: 0 8px 26px rgba(29, 26, 22, 0.18);
+  max-width: 560px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--fh-red); outline-offset: 2px; }
+
+/* ---- Masthead ---- */
+.band { background: var(--fh-red); padding: 22px 24px 16px; text-align: center; }
+.wordmark { font-family: var(--display); font-weight: normal; color: var(--fh-cream); font-size: 2.6rem; line-height: 1; }
+.band-tag { color: var(--fh-pink); font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 8px; }
+
+.app-body { padding: 20px 24px 4px; display: flex; flex-direction: column; gap: 22px; }
+
+/* ---- Add a tune ---- */
+.add { display: flex; gap: 8px; }
+.add input {
+  flex: 1; min-width: 0;
+  padding: 11px 12px;
+  border: 1.5px solid var(--fh-ink); border-radius: 6px;
+  background: var(--fh-paper); color: var(--fh-ink);
+}
+.add input::placeholder { color: #9a9184; }
+.add input:focus { outline: none; border-color: var(--fh-red); box-shadow: 0 0 0 2px rgba(153,0,52,.15); }
+.btn-ink {
+  font-family: var(--display); text-transform: uppercase; letter-spacing: 2px;
+  background: var(--fh-ink); color: var(--fh-cream);
+  border: 1.5px solid var(--fh-ink); border-radius: 6px;
+  padding: 10px 16px; font-size: 1rem; transition: background .15s, border-color .15s;
+}
+.btn-ink:hover { background: var(--fh-red); border-color: var(--fh-red); }
+.btn-ink:active { transform: translateY(1px); }
+
+/* ---- Section headings ---- */
+.section { display: flex; flex-direction: column; gap: 10px; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; border-bottom: 1.5px solid var(--fh-ink); padding-bottom: 4px; }
+.section-head h2 { font-family: var(--display); font-weight: normal; font-size: 1.45rem; color: var(--fh-ink); line-height: 1.1; }
+.count { font-size: .72rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; color: var(--fh-red); font-variant-numeric: tabular-nums; }
+.empty { font-style: italic; color: var(--fh-gray); padding: 6px 2px; }
+
+/* ---- Tune cards ---- */
+.tunes { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.tune {
+  background: var(--fh-paper);
+  border: 1px solid var(--fh-line);
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.tune.resting { background: transparent; }
+.tune-top { display: flex; align-items: flex-start; gap: 10px; }
+.tune-name { flex: 1; min-width: 0; font-size: 1.08rem; font-weight: 700; color: var(--fh-ink); overflow-wrap: anywhere; }
+.tune-name .tag { font-weight: 400; font-style: italic; color: var(--fh-gray); font-size: .9rem; }
+.more {
+  background: none; border: none; color: var(--fh-gray);
+  font-size: 1.2rem; line-height: 1; padding: 2px 6px; border-radius: 4px; letter-spacing: 1px;
+}
+.more:hover { color: var(--fh-red); }
+
+.history { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.history-label { font-size: .68rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; color: var(--fh-gray); margin-right: 4px; }
+.chip {
+  width: 26px; height: 26px; border-radius: 4px;
+  display: grid; place-items: center;
+  font-family: var(--display); font-size: .95rem; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.chip.r1 { background: var(--r1); color: var(--fh-red-dark); }
+.chip.r2 { background: var(--r2); color: var(--fh-red-dark); }
+.chip.r3 { background: var(--r3); color: var(--fh-ink); }
+.chip.r4 { background: var(--r4); color: var(--fh-cream); }
+.chip.r5 { background: var(--r5); color: var(--fh-cream); }
+.earlier { font-size: .78rem; color: var(--fh-gray); }
+.new-note { font-size: .85rem; font-style: italic; }
+
+.rate-prompt { font-size: .8rem; color: var(--fh-gray); }
+.rate { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.rate button {
+  background: var(--fh-cream);
+  border: 1.5px solid var(--fh-ink); border-radius: 6px;
+  padding: 7px 2px 6px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  color: var(--fh-ink); transition: background .12s, color .12s, border-color .12s;
+}
+.rate .n { font-family: var(--display); font-size: 1.55rem; line-height: 1; }
+.rate .w { font-size: .66rem; letter-spacing: .5px; text-transform: uppercase; font-weight: 700; color: var(--fh-gray); }
+.rate button:hover { border-color: var(--fh-red); color: var(--fh-red); }
+.rate button:hover .w { color: var(--fh-red); }
+.rate button:active { transform: translateY(1px); background: var(--fh-red); color: var(--fh-cream); }
+
+.rest-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: .9rem; }
+.rest-row strong { color: var(--fh-ink); }
+.link-btn { background: none; border: none; color: var(--fh-red); text-decoration: underline; text-underline-offset: 3px; font-size: .9rem; padding: 2px 0; }
+.link-btn:hover { color: var(--fh-red-dark); }
+
+.edit { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; border-top: 1px dashed var(--fh-line); padding-top: 10px; }
+.edit input { flex: 1 1 180px; min-width: 0; padding: 8px 10px; border: 1.5px solid var(--fh-ink); border-radius: 6px; background: var(--fh-paper); color: var(--fh-ink); }
+.btn-line { background: transparent; border: 1.5px solid var(--fh-ink); color: var(--fh-ink); border-radius: 6px; padding: 7px 12px; font-size: .9rem; font-weight: 700; }
+.btn-line:hover { border-color: var(--fh-red); color: var(--fh-red); }
+.btn-line.danger { border-color: var(--fh-red); color: var(--fh-red); }
+.btn-line.danger.armed { background: var(--fh-red); color: var(--fh-cream); }
+
+/* ---- How to rate ---- */
+details.howto { border: 1.5px solid var(--fh-ink); border-radius: 6px; background: var(--fh-paper); }
+details.howto summary {
+  cursor: pointer; padding: 10px 14px; list-style: none;
+  font-family: var(--display); font-size: 1.15rem; color: var(--fh-ink);
+  display: flex; justify-content: space-between; align-items: center;
+}
+details.howto summary::-webkit-details-marker { display: none; }
+details.howto summary::after { content: '+'; font-family: var(--body); font-weight: 700; color: var(--fh-red); font-size: 1.2rem; }
+details.howto[open] summary::after { content: '–'; }
+.howto-body { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 10px; font-size: .95rem; }
+.scale { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.scale li { display: flex; align-items: center; gap: 10px; color: var(--fh-ink); }
+.howto-body p { max-width: 60ch; }
+
+/* ---- Footer ---- */
+.foot { display: flex; flex-direction: column; gap: 8px; font-size: .82rem; padding-top: 2px; }
+.foot-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+.warn { background: var(--fh-red); color: var(--fh-cream); border-radius: 6px; padding: 10px 14px; font-weight: 700; font-size: .9rem; }
+.art { margin-top: 10px; border-top: 1px solid var(--fh-line); }
+.art img { display: block; width: 100%; height: auto; mix-blend-mode: multiply; opacity: .9; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---- Toast ---- */
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: min(520px, calc(100% - 32px));
+  background: var(--fh-ink); color: var(--fh-cream);
+  border-radius: 6px; padding: 12px 14px;
+  display: flex; gap: 12px; align-items: center; justify-content: space-between;
+  box-shadow: 0 6px 20px rgba(29,26,22,.3); font-size: .92rem; z-index: 20;
+}
+.toast button { background: none; border: none; color: var(--fh-pink); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: .78rem; white-space: nowrap; }
+
+@media (max-width: 480px) {
+  body { padding-block: 0 16px; padding-left: 0; padding-right: 0; }
+  .container { border-radius: 0; box-shadow: none; }
+  .band { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .app-body { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .wordmark { font-size: 2.2rem; }
+  .rate .n { font-size: 1.35rem; }
+  .rate .w { font-size: .6rem; letter-spacing: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="band">
+    <h1 class="wordmark">Tune Tracker</h1>
+    <div class="band-tag">FiddleHed &middot; Tune Memory</div>
+  </header>
+
+  <main class="app-body">
+    <div class="warn" id="storageWarn" hidden>This browser won't save your list. Try opening the tracker in a regular (not private) browser window.</div>
+
+    <form class="add" id="addForm" autocomplete="off">
+      <label class="sr-only" for="newTune">Tune name</label>
+      <input id="newTune" type="text" maxlength="80" placeholder="Add a tune you've learned…">
+      <button class="btn-ink" type="submit">Add</button>
+    </form>
+
+    <section class="section" aria-labelledby="dueHead">
+      <div class="section-head">
+        <h2 id="dueHead">Up today</h2>
+        <span class="count" id="dueCount"></span>
+      </div>
+      <ul class="tunes" id="dueList"></ul>
+      <p class="empty" id="dueEmpty" hidden></p>
+    </section>
+
+    <section class="section" aria-labelledby="restHead" id="restSection">
+      <div class="section-head">
+        <h2 id="restHead">Resting</h2>
+        <span class="count" id="restCount"></span>
+      </div>
+      <ul class="tunes" id="restList"></ul>
+    </section>
+
+    <details class="howto" id="howto">
+      <summary>How to rate</summary>
+      <div class="howto-body">
+        <p>Try to play the tune from memory. No peeking. Then rate your recall:</p>
+        <ul class="scale">
+          <li><span class="chip r1">1</span> Can't remember it</li>
+          <li><span class="chip r2">2</span> Learned it before, forgot it</li>
+          <li><span class="chip r3">3</span> Stumble through, forget parts</li>
+          <li><span class="chip r4">4</span> Can play with effort</li>
+          <li><span class="chip r5">5</span> Flows naturally</li>
+        </ul>
+        <p><strong>1–4:</strong> work on the parts you forgot. The tune comes back tomorrow.</p>
+        <p><strong>5:</strong> it rests for two days. Keep scoring 5s and the rest gets longer: 2, 4, 8, then 16 days.</p>
+      </div>
+    </details>
+
+    <footer class="foot">
+      <p>Your tunes are saved in this browser, on this device. They won't follow you to a different phone or browser. Save a backup now and then.</p>
+      <div class="foot-actions">
+        <button class="link-btn" type="button" id="backupBtn">Save a backup</button>
+        <button class="link-btn" type="button" id="restoreBtn">Restore a backup</button>
+        <input type="file" id="restoreFile" accept=".json,application/json" hidden>
+      </div>
+    </footer>
+  </main>
+
+  <div class="art"><img src="fiddler.png" alt="Pen-and-ink drawing of an old-time fiddler in a hat and glasses"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden>
+  <span id="toastMsg"></span>
+  <button type="button" id="toastUndo">Undo</button>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var KEY = 'fh-tune-tracker-v1';
+  var WORDS = { 1: 'Blank', 2: 'Forgot', 3: 'Stumble', 4: 'Effort', 5: 'Flows' };
+  var MEANING = {
+    1: "Can't remember it",
+    2: 'Learned it before, forgot it',
+    3: 'Stumble through, forget parts',
+    4: 'Can play with effort',
+    5: 'Flows naturally'
+  };
+  var MAX_REST = 16;
+
+  var store = { tunes: [] };
+  var canSave = true;
+  var openEdit = null;     // tune id with edit row open
+  var earlyRate = {};      // tune ids where "review now" was tapped
+  var undoState = null;
+  var toastTimer = null;
+
+  // ---------- dates (local, YYYY-MM-DD) ----------
+  function ymd(d) {
+    var m = d.getMonth() + 1, day = d.getDate();
+    return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+  }
+  function parse(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function addDays(s, n) { var d = parse(s); d.setDate(d.getDate() + n); return ymd(d); }
+  function today() { return ymd(new Date()); }
+  function daysBetween(a, b) { return Math.round((parse(b) - parse(a)) / 86400000); }
+  function niceDay(s) {
+    var diff = daysBetween(today(), s);
+    if (diff <= 0) return 'today';
+    if (diff === 1) return 'tomorrow';
+    var d = parse(s);
+    if (diff < 7) return d.toLocaleDateString('en-US', { weekday: 'long' });
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  // ---------- storage ----------
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw === null) return false;
+      var data = JSON.parse(raw);
+      if (data && Array.isArray(data.tunes)) { store = data; return true; }
+      return false;
+    } catch (e) { canSave = false; return false; }
+  }
+  function save() {
+    if (!canSave) return;
+    try { localStorage.setItem(KEY, JSON.stringify(store)); }
+    catch (e) { canSave = false; document.getElementById('storageWarn').hidden = false; }
+  }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  // ---------- spacing rule ----------
+  function restDays(t) {
+    var r = t.reviews;
+    if (!r.length) return 0;
+    if (r[r.length - 1].r < 5) return 1;
+    var streak = 0;
+    for (var i = r.length - 1; i >= 0 && r[i].r === 5; i--) streak++;
+    return Math.min(Math.pow(2, streak), MAX_REST);
+  }
+  function dueDate(t) {
+    if (!t.reviews.length) return today();
+    return addDays(t.reviews[t.reviews.length - 1].d, restDays(t));
+  }
+  function isDue(t) { return dueDate(t) <= today(); }
+  function lastRating(t) { return t.reviews.length ? t.reviews[t.reviews.length - 1].r : 0; }
+
+  // ---------- render ----------
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function historyHTML(t) {
+    if (!t.reviews.length) return '<span class="new-note">New tune. Not reviewed yet.</span>';
+    var recent = t.reviews.slice(-5);
+    var html = '<span class="history-label">Reviews</span>';
+    if (t.reviews.length > 5) html += '<span class="earlier">+' + (t.reviews.length - 5) + ' earlier</span>';
+    recent.forEach(function (rv) {
+      var when = parse(rv.d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      html += '<span class="chip r' + rv.r + '" title="' + when + ': ' + MEANING[rv.r] + '">' + rv.r + '</span>';
+    });
+    return html;
+  }
+  function rateHTML(t) {
+    var html = '<div class="rate" role="group" aria-label="Rate your recall of ' + esc(t.name) + '">';
+    for (var n = 1; n <= 5; n++) {
+      html += '<button type="button" data-act="rate" data-r="' + n + '" title="' + MEANING[n] + '">' +
+              '<span class="n">' + n + '</span><span class="w">' + WORDS[n] + '</span></button>';
+    }
+    return html + '</div>';
+  }
+  function cardHTML(t, due) {
+    var nameHTML = esc(t.name.replace(/\s*\(example\)\s*$/i, ''));
+    if (t.example) nameHTML += ' <span class="tag">(example)</span>';
+    var html = '<li class="tune' + (due ? '' : ' resting') + '" data-id="' + t.id + '">' +
+      '<div class="tune-top"><h3 class="tune-name">' + nameHTML + '</h3>' +
+      '<button type="button" class="more" data-act="edit" aria-label="Rename or delete ' + esc(t.name) + '" aria-expanded="' + (openEdit === t.id) + '">•••</button></div>' +
+      '<div class="history">' + historyHTML(t) + '</div>';
+    if (due) {
+      html += '<div class="rate-prompt">Play it from memory, then tap how it went.</div>' + rateHTML(t);
+    } else {
+      html += '<div class="rest-row"><span>Resting. Back <strong>' + niceDay(dueDate(t)) + '</strong>.</span>';
+      if (!earlyRate[t.id]) html += '<button type="button" class="link-btn" data-act="early">Review it now</button>';
+      html += '</div>';
+      if (earlyRate[t.id]) html += rateHTML(t);
+    }
+    if (openEdit === t.id) {
+      html += '<div class="edit">' +
+        '<label class="sr-only" for="rename-' + t.id + '">Tune name</label>' +
+        '<input id="rename-' + t.id + '" type="text" maxlength="80" value="' + esc(t.name) + '">' +
+        '<button type="button" class="btn-line" data-act="save-name">Save</button>' +
+        '<button type="button" class="btn-line danger" data-act="delete">Delete</button></div>';
+    }
+    return html + '</li>';
+  }
+
+  function render() {
+    var due = [], rest = [];
+    store.tunes.forEach(function (t) { (isDue(t) ? due : rest).push(t); });
+    due.sort(function (a, b) {
+      var ra = a.reviews.length ? lastRating(a) : -1, rb = b.reviews.length ? lastRating(b) : -1;
+      return ra - rb || (dueDate(a) < dueDate(b) ? -1 : 1);
+    });
+    rest.sort(function (a, b) { return dueDate(a) < dueDate(b) ? -1 : dueDate(a) > dueDate(b) ? 1 : 0; });
+
+    document.getElementById('dueList').innerHTML = due.map(function (t) { return cardHTML(t, true); }).join('');
+    document.getElementById('restList').innerHTML = rest.map(function (t) { return cardHTML(t, false); }).join('');
+    document.getElementById('dueCount').textContent = due.length ? due.length + (due.length === 1 ? ' tune' : ' tunes') : '';
+    document.getElementById('restCount').textContent = rest.length ? rest.length + (rest.length === 1 ? ' tune' : ' tunes') : '';
+    document.getElementById('restSection').hidden = rest.length === 0;
+
+    var empty = document.getElementById('dueEmpty');
+    if (!store.tunes.length) {
+      empty.textContent = 'No tunes yet. Add one you’ve learned, even if it’s a little rusty.';
+      empty.hidden = false;
+    } else if (!due.length) {
+      empty.textContent = 'All caught up. Go play something new.';
+      empty.hidden = false;
+    } else {
+      empty.hidden = true;
+    }
+  }
+
+  // ---------- undo + toast ----------
+  function snapshot() { undoState = JSON.stringify(store); }
+  function toast(msg, undoable) {
+    var el = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    document.getElementById('toastUndo').hidden = !undoable;
+    el.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.hidden = true; undoState = null; }, 7000);
+  }
+  document.getElementById('toastUndo').addEventListener('click', function () {
+    if (!undoState) return;
+    store = JSON.parse(undoState); undoState = null;
+    save(); render();
+    document.getElementById('toast').hidden = true;
+  });
+
+  // ---------- actions ----------
+  function find(id) { for (var i = 0; i < store.tunes.length; i++) if (store.tunes[i].id === id) return store.tunes[i]; return null; }
+
+  document.getElementById('addForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var input = document.getElementById('newTune');
+    var name = input.value.trim();
+    if (!name) { input.focus(); return; }
+    snapshot();
+    store.tunes.push({ id: uid(), name: name, reviews: [] });
+    save(); render();
+    input.value = '';
+    toast('Added “' + name + '”. It’s up today.', true);
+  });
+
+  document.querySelector('.app-body').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    var card = btn.closest('.tune');
+    if (!card) return;
+    var t = find(card.getAttribute('data-id'));
+    if (!t) return;
+    var act = btn.getAttribute('data-act');
+
+    if (act === 'rate') {
+      var r = +btn.getAttribute('data-r');
+      snapshot();
+      var d = today();
+      // a second rating on the same day replaces the first
+      if (t.reviews.length && t.reviews[t.reviews.length - 1].d === d) t.reviews.pop();
+      t.reviews.push({ d: d, r: r });
+      delete earlyRate[t.id];
+      save(); render();
+      var back = niceDay(dueDate(t));
+      toast(r === 5
+        ? 'Flows naturally! Resting until ' + back + '.'
+        : r + ' — ' + MEANING[r].toLowerCase() + '. Work the tricky parts. Back ' + back + '.', true);
+    } else if (act === 'early') {
+      earlyRate[t.id] = true; render();
+    } else if (act === 'edit') {
+      openEdit = openEdit === t.id ? null : t.id; render();
+      if (openEdit) { var inp = document.getElementById('rename-' + t.id); if (inp) inp.focus(); }
+    } else if (act === 'save-name') {
+      var val = document.getElementById('rename-' + t.id).value.trim();
+      if (val) { snapshot(); t.name = val; delete t.example; save(); }
+      openEdit = null; render();
+    } else if (act === 'delete') {
+      if (!btn.classList.contains('armed')) {
+        btn.classList.add('armed'); btn.textContent = 'Tap again to delete';
+        return;
+      }
+      snapshot();
+      store.tunes = store.tunes.filter(function (x) { return x.id !== t.id; });
+      openEdit = null; save(); render();
+      toast('Deleted “' + t.name + '”.', true);
+    }
+  });
+
+  document.querySelector('.app-body').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.id && e.target.id.indexOf('rename-') === 0) {
+      e.preventDefault();
+      var b = e.target.closest('.tune').querySelector('[data-act="save-name"]');
+      if (b) b.click();
+    }
+  });
+
+  // ---------- backup / restore ----------
+  document.getElementById('backupBtn').addEventListener('click', function () {
+    try {
+      var blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'tune-tracker-backup-' + today() + '.json';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+      toast('Backup saved to your downloads.', false);
+    } catch (e) { toast('This browser blocked the download.', false); }
+  });
+  document.getElementById('restoreBtn').addEventListener('click', function () {
+    document.getElementById('restoreFile').click();
+  });
+  document.getElementById('restoreFile').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(reader.result);
+        if (!data || !Array.isArray(data.tunes)) throw new Error('bad');
+        snapshot(); store = data; save(); render();
+        toast('Restored ' + data.tunes.length + ' tunes.', true);
+      } catch (err) { toast('That file isn’t a Tune Tracker backup.', false); }
+      e.target.value = '';
+    };
+    reader.readAsText(f);
+  });
+
+  // ---------- boot ----------
+  var hadData = load();
+  if (!hadData) {
+    var t0 = today();
+    store = { tunes: [{
+      id: uid(), name: 'Oh Susannah', example: true,
+      reviews: [ { d: addDays(t0, -7), r: 2 }, { d: addDays(t0, -5), r: 3 }, { d: addDays(t0, -3), r: 3 }, { d: addDays(t0, -1), r: 4 } ]
+    }] };
+    save();
+    document.getElementById('howto').open = true;
+  }
+  if (!canSave) document.getElementById('storageWarn').hidden = false;
+  render();
+  // roll over to a new day if the page stays open past midnight
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) render(); });
+})();
+</script>
+</body>
+</html>
